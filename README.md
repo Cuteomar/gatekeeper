@@ -89,13 +89,54 @@ Open **http://127.0.0.1:5000** in your browser.
 
 ## 🚀 Quick Start
 
-After running `seed.py`, three test users are created:
+After running `python seed.py`, three test users are created:
 
 | Username | Password | Role      | Permissions |
 |----------|----------|-----------|-------------|
 | `admin`  | admin123 | **admin** | All permissions |
 | `staff`  | staff123 | **staff** | `read:content`, `write:content` |
 | `guest`  | guest123 | **guest** | `read:content` |
+
+---
+
+## 🌐 Deploy to Render (Free, Vercel-like)
+
+GateKeeper is ready to deploy on **Render** — it creates a free PostgreSQL database and web service automatically.
+
+### One-click deploy
+
+1. Push the repo to GitHub (already done)
+2. Go to **[dashboard.render.com](https://dashboard.render.com)**
+3. Click **New → Blueprint** and connect your `gatekeeper` repo
+4. Render reads `render.yaml` and sets up:
+   - A **web service** with Gunicorn (2 workers)
+   - A **free PostgreSQL database**
+   - Auto-generated `SECRET_KEY`
+5. Click **Apply** — deploy takes ~3 minutes
+6. Once live, run the seed script once in the Render shell:
+   ```bash
+   python seed.py
+   ```
+
+Your app will be at: `https://gatekeeper.onrender.com`
+
+### Alternative: Manual setup on Render
+
+1. Create a **Web Service** → connect GitHub repo
+2. Set **Build Command**: `pip install -r requirements.txt`
+3. Set **Start Command**: `gunicorn run:app --bind 0.0.0.0:$PORT --workers 2`
+4. Add a **PostgreSQL database** (free tier) from the Render dashboard
+5. Copy the database URL into an environment variable `DATABASE_URL`
+6. Add a secret `SECRET_KEY` env var (any random string)
+7. Deploy, then run `python seed.py` in the Render shell
+
+### Other free options
+
+| Platform | Setup | URL format |
+|----------|-------|------------|
+| **Railway** | Connect repo → auto-detects Flask | `gatekeeper.up.railway.app` |
+| **PythonAnywhere** | Manual git pull, manual WSGI config | `yourusername.pythonanywhere.com` |
+| **Fly.io** | `fly launch` CLI, auto Flask detection | `gatekeeper.fly.dev` |
 
 ---
 

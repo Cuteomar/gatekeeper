@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Entry point for the RBAC Flask application.
+"""Entry point for the GateKeeper Flask application.
 
 Usage
 -----
-    flask run             # Uses FLASK_APP=run.py from .env
-    python run.py         # Starts the development server directly
+    flask run            # Development server
+    gunicorn run:app     # Production (Render, Railway, etc.)
+    python run.py        # Direct execution
 """
 
 import os
@@ -14,4 +15,5 @@ app = create_app()
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=True)
+    debug = os.getenv("FLASK_ENV", "production") == "development"
+    app.run(host="0.0.0.0", port=port, debug=debug)

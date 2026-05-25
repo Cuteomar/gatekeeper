@@ -1,0 +1,25 @@
+# Render Blueprint — one-click deploy from GitHub
+# https://dashboard.render.com/blueprints
+
+services:
+  - type: web
+    name: gatekeeper
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn run:app --bind 0.0.0.0:$PORT --workers 2
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: gatekeeper-db
+          property: connectionString
+      - key: PYTHON_VERSION
+        value: 3.11.0
+
+databases:
+  - name: gatekeeper-db
+    databaseName: gatekeeper
+    plan: free
