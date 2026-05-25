@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-speedometer2"></i> Dashboard</h2>
+    <span class="badge bg-info fs-6">{{ current_user.role_name }}</span>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card border-secondary">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-person-badge"></i> Your Role</h5>
+                <p class="card-text">
+                    You are logged in as <strong>{{ current_user.username }}</strong>
+                    with role <strong>{{ current_user.role_name }}</strong>.
+                </p>
+                {% if current_user.role %}
+                    <h6>Permissions:</h6>
+                    <ul class="list-group list-group-flush">
+                        {% set perms = current_user.role.permissions %}
+                        {% if perms %}
+                            {% for perm in perms | sort %}
+                                <li class="list-group-item bg-transparent border-secondary py-1">
+                                    <i class="bi bi-key-fill text-success me-1"></i> <code>{{ perm }}</code>
+                                </li>
+                            {% endfor %}
+                        {% else %}
+                            <li class="list-group-item bg-transparent border-secondary py-1 text-muted">No permissions assigned.</li>
+                        {% endif %}
+                    </ul>
+                {% else %}
+                    <div class="alert alert-warning mt-2">
+                        <i class="bi bi-exclamation-triangle"></i> No role assigned. Contact an administrator.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card border-secondary">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-shield-check"></i> Accessible Areas</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item bg-transparent border-secondary">
+                        <i class="bi bi-globe me-1"></i> Public pages
+                    </li>
+                    <li class="list-group-item bg-transparent border-secondary">
+                        <i class="bi bi-layout-text-window me-1"></i> Dashboard
+                    </li>
+                    {% if current_user.role_name in ('admin', 'staff') %}
+                        <li class="list-group-item bg-transparent border-secondary">
+                            <i class="bi bi-people-fill text-success me-1"></i> Staff Area
+                        </li>
+                    {% endif %}
+                    {% if current_user.role_name == 'admin' %}
+                        <li class="list-group-item bg-transparent border-secondary">
+                            <i class="bi bi-gear-fill text-warning me-1"></i> Admin Panel
+                        </li>
+                        <li class="list-group-item bg-transparent border-secondary">
+                            <i class="bi bi-journal-text text-info me-1"></i> Audit Logs
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

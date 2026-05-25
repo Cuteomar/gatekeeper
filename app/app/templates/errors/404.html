@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Not Found{% endblock %}
+{% block content %}
+<div class="row justify-content-center text-center mt-5">
+    <div class="col-md-6">
+        <h1 class="display-1 text-info">404</h1>
+        <h2 class="mb-3"><i class="bi bi-compass"></i> Page Not Found</h2>
+        <p class="lead text-muted">The page you're looking for doesn't exist.</p>
+        <a href="{{ url_for('main.index') }}" class="btn btn-primary">
+            <i class="bi bi-house-fill"></i> Go Home
+        </a>
+    </div>
+</div>
+{% endblock %}

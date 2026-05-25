@@ -1,0 +1,51 @@
+/* Custom styling for RBAC System */
+body {
+    min-height: 100vh;
+    background-color: #212529;
+}
+
+/* Card hover effect */
+.card {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* Table improvements */
+.table th {
+    border-top: none !important;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+}
+
+/* Role badge in navbar */
+.navbar .badge {
+    font-size: 0.7rem;
+    vertical-align: middle;
+}
+
+/* Flash message icons */
+.alert i {
+    font-size: 1.1rem;
+}
+
+/* Pagination active page */
+.page-item.active .page-link {
+    background-color: var(--bs-info);
+    border-color: var(--bs-info);
+}
+
+/* Code blocks in tables */
+.table code {
+    color: #e685b5;
+}
+
+/* Smooth transitions */
+.navbar, .alert, .btn {
+    transition: all 0.2s ease;
+}

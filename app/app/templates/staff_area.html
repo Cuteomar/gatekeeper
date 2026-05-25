@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Staff Area{% endblock %}
+{% block content %}
+<div class="card border-secondary">
+    <div class="card-body">
+        <h2 class="card-title">
+            <i class="bi bi-people-fill text-success"></i> Staff Area
+        </h2>
+        <p class="card-text lead">
+            Welcome, <strong>{{ current_user.username }}</strong>. This section is
+            restricted to users with the <code>admin</code> or <code>staff</code> role.
+        </p>
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i>
+            If a <code>guest</code> user tries to access this URL they will receive a
+            <strong>403 Forbidden</strong> response and the attempt will be recorded
+            in the audit log.
+        </div>
+        <hr>
+        <h5>Internal Notes (simulated)</h5>
+        <ul>
+            <li>Q1 Revenue target: £2.4M &mdash; <span class="text-success">on track</span></li>
+            <li>Security audit scheduled for next Monday</li>
+            <li>New RBAC module deployment v2.1 approved</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
