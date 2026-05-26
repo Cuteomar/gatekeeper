@@ -1,23 +1,17 @@
-#!/usr/bin/env python3
-"""Seed script — creates the default roles (admin, staff, guest) and an
-admin user so the application is usable immediately.
+"""Seed script — creates default roles and sample users.
 
 Usage
 -----
-    python seed.py
+    python seed.py          # Standalone
+    from seed import seed_database  # Called by app factory on empty DB
 """
 
 from app import create_app, db
 from app.models import Role, User, Permission
 
-app = create_app()
 
-with app.app_context():
-    db.create_all()
-
-    # ------------------------------------------------------------------ #
-    #  1. Create default roles
-    # ------------------------------------------------------------------ #
+def seed_database():
+    """Create default roles and users if they don't exist."""
     roles_data = {
         "admin": {
             "description": "Full system access — manage users, roles, and audit logs.",
@@ -51,64 +45,38 @@ with app.app_context():
             role = Role(name=name, description=data["description"])
             role.permissions = data["permissions"]
             db.session.add(role)
-            print(f"  ✓ Created role: {name}")
+            print("  ✓ Created role: {}".format(name))
         else:
-            print(f"  - Skipped role '{name}' (already exists)")
+            print("  - Skipped role '{}' (already exists)".format(name))
 
     db.session.commit()
 
-    # ------------------------------------------------------------------ #
-    #  2. Create default admin user (password: admin123)
-    # ------------------------------------------------------------------ #
-    admin_role = Role.query.filter_by(name="admin").first()
-    if admin_role and not User.query.filter_by(username="admin").first():
-        admin_user = User(
-            username="admin",
-            email="admin@example.com",
-            role_id=admin_role.id,
-            is_active=True,
-        )
-        admin_user.set_password("admin123")
-        db.session.add(admin_user)
-        db.session.commit()
-        print("  ✓ Created admin user: admin / admin123")
-    else:
-        print("  - Skipped admin user (already exists or admin role missing)")
+    users_data = [
+        ("admin", "admin@example.com", "admin123", "admin"),
+        ("staff", "staff@example.com", "staff123", "staff"),
+        ("guest", "guest@example.com", "guest123", "guest"),
+    ]
 
-    # ------------------------------------------------------------------ #
-    #  3. Create a sample staff user (password: staff123)
-    # ------------------------------------------------------------------ #
-    staff_role = Role.query.filter_by(name="staff").first()
-    if staff_role and not User.query.filter_by(username="staff").first():
-        staff_user = User(
-            username="staff",
-            email="staff@example.com",
-            role_id=staff_role.id,
-            is_active=True,
-        )
-        staff_user.set_password("staff123")
-        db.session.add(staff_user)
-        db.session.commit()
-        print("  ✓ Created staff user: staff / staff123")
-    else:
-        print("  - Skipped staff user (already exists or staff role missing)")
+    for username, email, password, role_name in users_data:
+        if not User.query.filter_by(username=username).first():
+            role = Role.query.filter_by(name=role_name).first()
+            if role:
+                user = User(username=username, email=email, role_id=role.id, is_active=True)
+                user.set_password(password)
+                db.session.add(user)
+                db.session.commit()
+                print("  ✓ Created {} user: {} / {}".format(role_name, username, password))
+            else:
+                print("  - Skipped {}: role '{}' not found".format(username, role_name))
+        else:
+            print("  - Skipped user '{}' (already exists)".format(username))
 
-    # ------------------------------------------------------------------ #
-    #  4. Create a sample guest user (password: guest123)
-    # ------------------------------------------------------------------ #
-    guest_role = Role.query.filter_by(name="guest").first()
-    if guest_role and not User.query.filter_by(username="guest").first():
-        guest_user = User(
-            username="guest",
-            email="guest@example.com",
-            role_id=guest_role.id,
-            is_active=True,
-        )
-        guest_user.set_password("guest123")
-        db.session.add(guest_user)
-        db.session.commit()
-        print("  ✓ Created guest user: guest / guest123")
-    else:
-        print("  - Skipped guest user (already exists or guest role missing)")
+    print("\nSeed complete.")
 
-    print("\nSeed complete. You can now run: flask run")
+
+if __name__ == "__main__":
+    app = create_app()
+    with app.app_context():
+        db.create_all()
+        seed_database()
+        print("You can now run: flask run")

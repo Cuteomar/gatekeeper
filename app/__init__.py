@@ -50,4 +50,10 @@ def create_app(config_class=Config):
     with app.app_context():
         from app import models  # noqa: F401
 
+        # Auto-seed database if tables exist but are empty (first deploy)
+        from app.models import Role, User
+        if not Role.query.first() and not User.query.first():
+            from app.seed import seed_database
+            seed_database()
+
     return app
