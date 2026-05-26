@@ -1,0 +1,9 @@
+# Railway configuration for Python Flask app
+[phases.setup]
+nixPkgs = ["python311", "python311Packages.pip"]
+
+[phases.install]
+commands = ["pip install -r requirements.txt"]
+
+[phases.start]
+cmd = "gunicorn run:app --bind 0.0.0.0:$PORT --workers 2"
